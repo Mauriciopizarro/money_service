@@ -23,7 +23,7 @@ class WalletMongoRepository(WalletRepository):
     @staticmethod
     def get_database():
         client = MongoClient(settings.DATABASE_MONGO_URL)
-        return client['blackjack']["wallet"]
+        return client['account']["wallet"]
 
     def get(self, wallet_id) -> Wallet:
         if not ObjectId.is_valid(wallet_id):
@@ -36,10 +36,18 @@ class WalletMongoRepository(WalletRepository):
     def get_by_user_id(self, user_id) -> Wallet:
         wallet_dict = self.db.find_one({"user_id": user_id})
         if not wallet_dict:
-            raise IncorrectUserID()
+            raise NotWalletFound()
         return Wallet(amount=wallet_dict.get('amount'), user_id=user_id)
 
+    def check_new_wallet_created(self, user_id):
+        wallet_dict = self.db.find_one({"user_id": user_id})
+        if wallet_dict:
+            return True
+        else:
+            return False
+
     def save(self, wallet: Wallet) -> Wallet:
+        self.db.insert_one(wallet.dict())
         return Wallet(amount=wallet.amount, user_id=wallet.user_id)
 
     def update(self, wallet: Wallet) -> Wallet:

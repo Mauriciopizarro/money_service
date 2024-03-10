@@ -1,5 +1,6 @@
 from pydantic import BaseModel, confloat
 from typing import Union
+from domain.exceptions.exceptions import *
 
 
 class Wallet(BaseModel):
@@ -12,3 +13,8 @@ class Wallet(BaseModel):
 
     def get_money(self) -> float:
         return self.amount
+
+    def extract_money(self, amount_to_extract):
+        if amount_to_extract > self.amount:
+            raise InsufficientFundsException("Insufficient funds")
+        self.amount -= amount_to_extract

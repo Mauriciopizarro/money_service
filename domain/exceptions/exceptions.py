@@ -7,8 +7,13 @@ class IncorrectWalletID(Exception):
     pass
 
 
-class IncorrectUserID(Exception):
+class NotWalletFound(Exception):
     pass
 
 
+class InsufficientFundsException(Exception):
+    pass
 
+
+class WalletAlreadyCreated(Exception):
+    pass

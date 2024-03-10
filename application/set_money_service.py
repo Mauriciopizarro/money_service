@@ -13,3 +13,4 @@ class SetMoneyService:
         wallet = self.wallet_repository.get_by_user_id(user_id)
         wallet.set_money(amount)
         self.wallet_repository.update(wallet)
+        return wallet.dict()
