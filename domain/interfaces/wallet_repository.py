@@ -17,5 +17,9 @@ class WalletRepository(ABC):
         pass
 
     @abstractmethod
+    def check_new_wallet_created(self, user_id):
+        pass
+
+    @abstractmethod
     def update(self, wallet: Wallet) -> Wallet:
         pass

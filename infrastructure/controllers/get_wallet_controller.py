@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from application.get_wallet_service import GetWalletService
 from domain.Wallet import Wallet
-from domain.exceptions.exceptions import IncorrectUserID
+from domain.exceptions.exceptions import NotWalletFound
 
 router = APIRouter()
 get_wallet_service = GetWalletService()
@@ -12,7 +12,7 @@ async def get_wallet(user_id):
     try:
         wallet = get_wallet_service.wallet_by_user(user_id)
         return wallet.dict()
-    except IncorrectUserID:
+    except NotWalletFound:
         raise HTTPException(
             status_code=404, detail='Wallet for this user not found',
         )

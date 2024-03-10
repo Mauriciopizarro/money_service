@@ -10,5 +10,6 @@ class Injector(containers.DeclarativeContainer):
 injector = Injector()
 injector.wire(modules=["application.get_wallet_service",
                        "application.create_wallet_service",
-                       "application.set_money_service"
+                       "application.set_money_service",
+                       "application.money_out_service"
                        ])
