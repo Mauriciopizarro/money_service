@@ -17,3 +17,7 @@ class InsufficientFundsException(Exception):
 
 class WalletAlreadyCreated(Exception):
     pass
+
+
+class InvalidIncomeAmountException(Exception):
+    pass
