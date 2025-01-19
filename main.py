@@ -3,7 +3,10 @@ from infrastructure.injector import Injector
 from infrastructure.controllers import get_wallet_controller, save_wallet_controller, \
     set_money_controller, money_out_controller
 
+
 app = FastAPI()
+injector = Injector()
+app.container = injector
 
 app.include_router(get_wallet_controller.router)
 app.include_router(save_wallet_controller.router)

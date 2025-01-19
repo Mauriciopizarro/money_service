@@ -1,11 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from typing import Union
 from pydantic import BaseModel, confloat
-from application.set_money_service import SetMoneyService
+from dependency_injector.wiring import inject, Provide
+from infrastructure.injector import Injector
 from domain.exceptions.exceptions import NotWalletFound, InvalidIncomeAmountException
 
 router = APIRouter()
-set_money_service = SetMoneyService()
 
 
 class SetMoneyRequestData(BaseModel):
@@ -14,7 +14,9 @@ class SetMoneyRequestData(BaseModel):
 
 
 @router.post("/wallet/set_money")
-async def set_money_controller(request: SetMoneyRequestData):
+@inject
+async def set_money_controller(request: SetMoneyRequestData,
+                               set_money_service=Depends(Provide[Injector.set_money_service])):
     try:
         return set_money_service.set_money(request.user_id, request.amount)
     except NotWalletFound:

@@ -1,14 +1,14 @@
-from fastapi import APIRouter
-from application.create_wallet_service import CreateWalletService
-from fastapi import HTTPException
+from fastapi import APIRouter, Depends, HTTPException
+from dependency_injector.wiring import inject, Provide
+from infrastructure.injector import Injector
 from domain.exceptions.exceptions import WalletAlreadyCreated
 
 router = APIRouter()
-create_wallet_service = CreateWalletService()
 
 
 @router.post("/wallet/create_wallet/{user_id}")
-async def create_wallet(user_id):
+@inject
+async def create_wallet(user_id, create_wallet_service=Depends(Provide[Injector.create_wallet_service])):
     try:
         return create_wallet_service.create_wallet(user_id).dict()
     except WalletAlreadyCreated:
