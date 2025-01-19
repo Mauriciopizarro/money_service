@@ -1,10 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException
 from typing import Union
 from pydantic import BaseModel, confloat
-from application.money_out_service import MoneyOutService
+from dependency_injector.wiring import inject, Provide
+from infrastructure.injector import Injector
+from domain.exceptions.exceptions import InsufficientFundsException, NotWalletFound
 
 router = APIRouter()
-money_out_service = MoneyOutService()
 
 
 class MoneyOutRequestData(BaseModel):
@@ -13,6 +14,16 @@ class MoneyOutRequestData(BaseModel):
 
 
 @router.post("/wallet/money_out")
-async def money_out_controller(request: MoneyOutRequestData):
-    return money_out_service.out_money(request.user_id, request.amount)
-
+@inject
+async def money_out_controller(request: MoneyOutRequestData,
+                               money_out_service=Depends(Provide[Injector.money_out_service])):
+    try:
+        return money_out_service.out_money(request.user_id, request.amount)
+    except InsufficientFundsException:
+        raise HTTPException(
+            status_code=400, detail='Insufficient funds',
+        )
+    except NotWalletFound:
+        raise HTTPException(
+            status_code=400, detail='Wallet not found for this user',
+        )

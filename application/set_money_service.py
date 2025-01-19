@@ -1,14 +1,10 @@
-from dependency_injector.wiring import inject, Provide
-
 from domain.exceptions.exceptions import InvalidIncomeAmountException
-from infrastructure.injector import Injector
 from domain.interfaces.wallet_repository import WalletRepository
 
 
 class SetMoneyService:
 
-    @inject
-    def __init__(self, wallet_repository: WalletRepository = Provide[Injector.wallet_repo]):
+    def __init__(self, wallet_repository: WalletRepository):
         self.wallet_repository = wallet_repository
 
     def set_money(self, user_id, amount):
